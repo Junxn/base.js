@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>轮播组件</title>
+<style>
+ul,li {list-style:none; margin:0; padding:0;}
+.carousel {position:relative; width:300px; height:200px; overflow:hidden;}
+.carousel .img-ct{height:200px; width:1500px; position:absolute;}
+.carousel .img-ct:after {content:''; display:block; clear:both;}/*清除浮动*/
+.carousel .img-ct>li {float:left;}
+.carousel .img-ct img{width:300px; height:200px;}
+.carousel .btn {width:30px; height:30px; text-align:center; line-height:30px; font-size:18px; text-decoration:none; color:#fff; display:block; border-radius:50%; background-color:#000; opacity:0.6; position:absolute; top:50%; margin-top:-15px;}
+.carousel .btn-pre {left:10px;}
+.carousel .btn-next {right:10px;}
+.carousel .bullet {position:absolute; bottom:10px; left:50%; margin-left:-45px;}/*bullet居中法*/
+.carousel .bullet:after {content: ''; display:block; clear:both;}
+.carousel .bullet>li {width:10px; height:4px; border-radius:20px; background:#fff; float:left; margin:0 4px;}
+.carousel .bullet .active {background-color:#999;}
+</style>
+</head>
+<body>
+	<div class="carousel">
+        <ul class="img-ct">
+            <li data-index=0><a href=""><img src="images/1.jpg" alt=""></a></li>
+            <li data-index=1><a href=""><img src="images/2.jpg" alt=""></a></li>
+            <li data-index=2><a href=""><img src="images/3.jpg" alt=""></a></li>
+            <li data-index=3><a href=""><img src="images/4.jpg" alt=""></a></li>
+            <li data-index=4><a href=""><img src="images/5.jpg" alt=""></a></li>
+        </ul>
+        <a class="btn btn-pre" href="#">&lt;</a>
+        <a class="btn btn-next" href="#">&gt;</a>
+        <ul class="bullet">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+//$(function(){
+	var $imgCt = $('.img-ct'),
+		$preBtn = $('.btn-pre'),
+		$nextBtn = $('.btn-next'),
+		$bullet = $('.bullet');
+		/*把1图克隆到5，5克隆到1*/
+	var $firstImg = $imgCt.find('li').first(),
+		$lastImg = $imgCt.find('li').last();
+	
+	var curPageIndex = 0;
+	var imgLength = $imgCt.children().length;
+	var isAnimate = false;
+		
+	/*克隆第一最后两张图片*/
+	$imgCt.prepend($lastImg.clone())	
+	$imgCt.append($firstImg.clone())
+	/*计算图片宽度*/
+	$imgCt.width($firstImg.width() * $imgCt.children().length)
+	/*开始做滚动*/
+	$imgCt.css('left','-300px')
+	/*设个变量，知道自己在第几页*/
+	//var curPageIndex = 0;
+	
+	/*绑定事件*/
+	$preBtn.on('click',function(e){
+		e.preventDefault();
+		playPre();
+	})
+	$nextBtn.on('click',function(e){
+		e.preventDefault();
+		playNext();	
+	})
+	
+	
+	function playNext(){
+		if(isAnimate) return;
+		isAnimate = true;
+		$imgCt.animate({
+			left: '-=300'
+		},function(){
+			curPageIndex++;
+			if(curPageIndex === imgLength){
+				$imgCt.css({'left':'-300px'})	
+				curPageIndex = 0
+			}
+			isAnimate = false;
+			setBullet();
+		})
+	}
+	
+	function playPre(){
+		if(isAnimate) return;
+		isAnimate = true;
+		$imgCt.animate({
+			left:'+=300'
+		},function(){
+			curPageIndex--;
+			if(curPageIndex < 0){
+				$imgCt.css('left',-(imgLength*$firstImg.width()));
+				curPageIndex = imgLength - 1
+			}
+			isAnimate = false;
+			setBullet();
+		})
+	}
+	
+	/*解决重复点击问题:56,79,80,89,93,94,104*/
+	
+	/*焦点*/
+	function setBullet(){
+		$bullet.children()
+				.removeClass('active')
+				.eq(curPageIndex)
+				.addClass('active')	
+	}
+//})
+</script>
+
+
+<script th:inline="javascript">
+
+		
+		
+        $(function(){
+            //var token = [[${token}]];
+            //$("#token").val(token);
+        })
+
+        var swiper = new Swiper('.img-ct', {
+            effect: 'coverflow',
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: 'auto',
+            autoplay:true,
+            coverflowEffect: {
+                rotate: 50,
+                stretch: 0,
+                depth: 100,
+                modifier: 1,
+                slideShadows : true,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+            },
+        });
+
+    </script>
+</body>
+</html>

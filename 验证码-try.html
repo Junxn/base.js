@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>验证码</title>
+    <style>
+        div {
+            width: 50%;
+            height: 100px;
+            margin: 0 auto;
+            vertical-align: middle;     /*垂直对齐*/
+            background-color: pink;
+            text-align: center;
+            line-height: 100px;
+        }
+        #inp {
+            width: 160px;
+            height: 30px;
+            outline: none;
+            text-indent: 1em;
+            box-sizing:border-box;
+        }
+        #code {
+            width: 80px;
+            height: 30px;
+            color: #fff;
+            font-weight: 800;
+            line-height: 28px;
+            text-align: center;
+            letter-spacing: 5px;
+            padding-left: 5px;
+            display: inline-block;
+            text-decoration: none;
+            background-color: #999;
+        }
+        #btn {
+            width: 50px;
+            height: 30px;
+            border: none;
+            outline: none;
+            border-radius: 10px;
+            background-color: skyblue;
+        }
+    </style>
+</head>
+<body onload="createCode()">
+    <div class="wrap">
+        <input type="text" placeholder="请输入验证码"  id="inp" />
+        <a href="javascript:;" id="code" onclick="createCode()"></a>
+        <input type="button" value="验证" id="btn" onclick="validate()" />
+    </div>
+</body>
+
+<script>
+
+    var checkCode = document.getElementById("code");
+    var btn = document.getElementById("btn");
+    var code = "";
+    //生成随机验证码
+    function createCode(){
+        code = "";
+        var codeLength = 4;
+        var random = [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R', 'S','T','U','V','W','X','Y','Z'];
+        for (var i=0; i<codeLength; i++){
+            var index = Math.floor((Math.random()*36));        //Math.random() * 36  会生生一个[0,36)的随机小数，其中包含了小数；Math.floor（）会对产生的数值进行向下取整
+            code += random[index];                            //根据索引取得随机数加到code上
+        }
+        checkCode.innerHTML = code;                           //根据索引取得随机数加到code上
+    }
+    //校验验证码
+    function validate(){
+        var input = document.getElementById("inp").value.toUpperCase();             //toUpperCase()将文本框的字母转化为大写字母
+        var inp = document.getElementById("inp");
+        if (input == 0){
+            alert('请输入验证码');
+        }else if( input != code ){
+            alert('验证码不正确！');
+            createCode();                                      //刷新验证码
+            inp.value = '';                                    //清空文本框
+        }else {
+            window.open('http://www.baidu.com','_target')    //_target重新打开一个窗口，_self在挡墙窗口打开新的页面
+            inp.value='';
+            createCode();
+        }
+    }
+</script>
+</html>
