@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用画布，画一颗良心</title>
+    <style>
+        body{
+            background-color: #999;
+        }
+        #div {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            background-color: #c4e1e1;
+        }
+        .div1 {
+            width: 100px;
+            height: 100px;
+            /*background-color: pink;*/
+            margin: 100px 100px;
+            float: left; 
+            animation: theDiv .5s infinite alternate-reverse;             /*infinite:无限次播放。  alternate-reverse:偶数次时反向播放。*/
+            -webkit-animation: theDiv .5s infinite alternate-reverse;
+        }
+        @keyframes theDiv {
+           0%{transform:scale(1);}
+           100%{transform: scale(1.2);}
+        }
+        @-webkit-keyframes theDiv {
+            0%{transform:scale(1);}
+            100%{transform: scale(1.2);}
+        }
+    </style>
+</head>
+<body onload="draw()">
+    
+    <div id="div">
+        
+    <canvas class="div1" id="myCanvas">您的浏览器不支持canvas，建议更换浏览器</canvas>
+    </div>
+</body>
+<script>
+function draw(){
+    var drawing = document.getElementById("myCanvas");    //获取canvas元素
+    drawing.width = '300';
+    drawing.height = '300';
+    if(drawing.getContext){         //获取绘图上下文
+        var content = drawing.getContext("2d"),
+            radian = 0,            //设置初始弧度
+            radian_add = Math.PI/180;       //设置弧度增量
+        content.beginPath();         //开始绘图
+        content.translate(150,150);       //设置绘图原点
+        content.moveTo(getX(radian),getY(radian));       //移动绘图游标至原点
+        while(radian <=(Math.PI*2)){
+            radian += radian_add;
+            X = getX(radian);
+            Y = getY(radian);
+            content.lineTo(X,Y);
+        }
+        content.fillStyle = 'black';        //填充颜色
+        content.strokeStyle = 'white';      //线条颜色
+        content.lineWidth = 2;             //线宽
+        content.fill();
+        content.stroke();
+    }
+    function getX(h){              //获取心形线X坐标
+        return 7*(16*Math.pow(Math.sin(h),3))
+    }
+    function getY(h){             //获取心形线Y坐标
+        return -7*(14*Math.cos(h)-4*Math.cos(2*h)-2*Math.cos(3*h)-Math.cos(4*h))
+    }
+}
+</script>
+</html>
+
